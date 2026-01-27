@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Showtime | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',   // Background
+              100: '#dcfce7',
+              200: '#bbf7d0',   // Borders
+              500: '#10b981',   // Primary Accent
+              600: '#059669',   // Hover Accent
+              900: '#064e3b',   // Deep Text
+            }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans">
+
+  <nav class="p-6 bg-white/80 backdrop-blur-md border-b border-mint-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-black text-mint-900 tracking-tighter">
+        CineReserve <span class="text-mint-500">🎬</span>
+      </a>
+      <a href="/theatres/<%= movie._id %>/<%= movie.cities[0] %>" class="text-sm font-bold text-mint-600 hover:text-mint-900 transition-colors">
+        ← Back to Theatres
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto py-16 px-6 text-center">
+    
+    <header class="mb-16 animate-fade-in-up">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-mint-100 rounded-full text-mint-600 text-[10px] font-black uppercase tracking-widest mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Step 4: Select Time
+      </div>
+      <h1 class="text-5xl font-black text-mint-900 tracking-tight mb-2"><%= movie.title %></h1>
+      <p class="text-slate-500 font-medium">Now showing at <span class="text-mint-600 font-bold"><%= theatre.name %></span></p>
+    </header>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
+      <% shows.forEach((show, index) => { %>
+        <a href="/book/seats/<%= show._id %>" 
+           class="group bg-white py-8 rounded-[2rem] border border-mint-100 hover:border-mint-500 hover:-translate-y-2 transition-all shadow-sm hover:shadow-2xl hover:shadow-mint-500/10 flex flex-col items-center justify-center opacity-0 animate-fade-in-up"
+           style="animation-delay: <%= index * 0.1 %>s;">
+          
+          <span class="text-2xl font-black text-mint-900 group-hover:text-mint-500 transition-colors">
+            <%= new Date(show.showTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+          </span>
+          
+          <div class="mt-2 px-3 py-1 bg-mint-50 text-mint-600 text-[9px] font-black uppercase tracking-widest rounded-lg group-hover:bg-mint-500 group-hover:text-white transition-all">
+            <%= show.screen.name %>
+          </div>
+          
+          <p class="mt-4 text-[10px] font-bold text-slate-300 group-hover:text-mint-200 uppercase">Select & Book</p>
+        </a>
+      <% }) %>
+
+      <% if (shows.length === 0) { %>
+        <div class="col-span-full py-20 bg-white/50 rounded-[3rem] border border-dashed border-mint-200">
+            <p class="text-slate-400 font-bold italic">No showtimes available for the selected theatre.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="mt-16 text-slate-400 text-xs font-medium animate-fade-in-up" style="animation-delay: 0.5s;">
+        <p>Tickets are selling fast! Select a time to view real-time seat availability.</p>
+    </div>
+  </main>
+
+  <footer class="py-20 text-center text-mint-200 text-[10px] uppercase font-black tracking-[0.4em]">
+    CineReserve &bull; 2026
+  </footer>
+
+</body>
+</html>

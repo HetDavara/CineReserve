@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Theatre | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',   // Background
+              100: '#dcfce7',
+              200: '#bbf7d0',   // Borders
+              500: '#10b981',   // Primary Accent
+              600: '#059669',   // Hover Accent
+              900: '#064e3b',   // Deep Text
+            }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans p-8">
+
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-10 animate-fade-in-up">
+      <a href="/movies/<%= city._id %>" class="text-mint-600 hover:text-mint-900 transition-colors flex items-center gap-2 text-sm font-black uppercase tracking-widest group">
+        <span class="group-hover:-translate-x-1 transition-transform">←</span> 
+        Back to Movies in <%= city.name %>
+      </a>
+    </div>
+
+    <header class="mb-12 animate-fade-in-up" style="animation-delay: 0.1s;">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-mint-100 rounded-full text-mint-600 text-[10px] font-black uppercase tracking-widest mb-4">
+        Step 3: Choose Cinema
+      </div>
+      <h1 class="text-5xl font-black text-mint-900 mb-2 tracking-tight">Available Theatres</h1>
+      <p class="text-slate-500 font-medium">
+        Cinemas playing <span class="text-mint-600 font-bold underline decoration-mint-200 underline-offset-4"><%= movie.title %></span> in <%= city.name %>
+      </p>
+    </header>
+
+    <div class="space-y-6">
+      <% if (theatres && theatres.length > 0) { %>
+        <% theatres.forEach((theatre, index) => { %>
+          <a href="/shows/<%= movie._id %>/<%= theatre._id %>" 
+             class="block bg-white p-8 rounded-[2.5rem] border border-mint-100 hover:border-mint-500 hover:-translate-y-2 transition-all group shadow-sm hover:shadow-2xl hover:shadow-mint-500/10 opacity-0 animate-fade-in-up"
+             style="animation-delay: <%= 0.2 + (index * 0.1) %>s;">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-2xl font-black text-mint-900 group-hover:text-mint-600 transition-colors">
+                  <%= theatre.name %>
+                </h3>
+                <p class="text-slate-400 text-sm mt-2 flex items-center gap-2 font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mint-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <%= theatre.address %>
+                </p>
+              </div>
+              <div class="bg-mint-50 p-4 rounded-2xl group-hover:bg-mint-500 group-hover:text-white transition-all transform group-hover:rotate-12">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <div class="text-center py-24 bg-white rounded-[3rem] border border-dashed border-mint-200 animate-fade-in-up" style="animation-delay: 0.2s;">
+          <p class="text-slate-400 font-bold text-lg">No theatres found for this movie in <%= city.name %>.</p>
+          <a href="/movies/<%= city._id %>" class="text-mint-600 mt-4 inline-block font-black hover:underline underline-offset-4">Try another movie</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <footer class="py-20 text-center text-mint-200 text-[10px] uppercase font-black tracking-[0.4em] mt-10">
+    CineReserve &bull; 2026 &bull; Experience the Magic
+  </footer>
+
+</body>
+</html>

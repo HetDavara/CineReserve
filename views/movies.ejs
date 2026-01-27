@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies in <%= city.name %> | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            }
+          },
+          animation: {
+            'card-entry': 'cardEntry 0.6s ease-out forwards',
+          },
+          keyframes: {
+            cardEntry: {
+              '0%': { opacity: '0', transform: 'translateY(20px) scale(0.98)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans selection:bg-mint-200">
+
+  <nav class="p-6 bg-white/80 backdrop-blur-md border-b border-mint-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-black text-mint-900 tracking-tighter">
+        CineReserve <span class="text-mint-500">🎬</span>
+      </a>
+      <a href="/" class="text-sm font-bold text-mint-600 hover:text-mint-900 transition-colors flex items-center gap-2 group">
+        <span class="text-lg group-hover:-translate-x-1 transition-transform">←</span> Change City
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-16 px-6">
+    <header class="mb-12 text-center md:text-left">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-mint-100 rounded-full text-mint-600 text-[10px] font-black uppercase tracking-widest mb-4">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span>
+        </span>
+        Now Playing in <%= city.name %>
+      </div>
+      <h1 class="text-5xl font-black text-mint-900 tracking-tight">Discover Movies</h1>
+      <p class="text-slate-500 mt-2 font-medium">Select a blockbuster to view showtimes and book your experience.</p>
+    </header>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <% if (movies && movies.length > 0) { %>
+        <% movies.forEach((movie, index) => { %>
+          <div class="group bg-white rounded-[2.5rem] overflow-hidden border border-mint-100 hover:border-mint-500 transition-all hover:-translate-y-3 shadow-sm hover:shadow-2xl hover:shadow-mint-500/10 flex flex-col animate-card-entry opacity-0"
+               style="animation-delay: <%= index * 0.1 %>s;">
+            
+            <div class="relative h-64 bg-gradient-to-br from-mint-50 to-mint-100 flex items-center justify-center overflow-hidden">
+              <span class="text-6xl group-hover:scale-125 transition-transform duration-500">🎞️</span>
+              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-mint-900 shadow-sm uppercase tracking-tighter">
+                Premium
+              </div>
+            </div>
+
+            <div class="p-8 flex flex-grow flex-col">
+              <h3 class="text-2xl font-black text-mint-900 leading-tight mb-4 group-hover:text-mint-600 transition-colors">
+                <%= movie.title %>
+              </h3>
+              
+              <div class="flex flex-wrap gap-2 mb-8">
+                <span class="px-3 py-1 bg-mint-50 text-mint-600 text-[10px] font-bold rounded-lg uppercase tracking-wider border border-mint-100">
+                  <%= movie.genre %>
+                </span>
+                <span class="px-3 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded-lg uppercase tracking-wider border border-slate-100">
+                  <%= movie.duration %> MIN
+                </span>
+              </div>
+
+              <div class="mt-auto">
+                <a href="/theatres/<%= movie._id %>/<%= city._id %>" 
+                   class="block w-full text-center bg-mint-900 text-white font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 shadow-lg shadow-mint-900/10">
+                  Select Theatre
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-span-full py-24 text-center bg-white rounded-[3rem] border-2 border-dashed border-mint-200 animate-card-entry">
+          <p class="text-6xl mb-4">🏜️</p>
+          <p class="text-slate-400 font-bold text-lg">No movies found in <%= city.name %> for now.</p>
+          <a href="/" class="mt-4 inline-block text-mint-600 font-black hover:underline underline-offset-4 tracking-tight uppercase text-sm">
+            Check another city
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </main>
+
+  <footer class="py-20 text-center border-t border-mint-100 mt-20">
+    <p class="text-mint-200 text-[10px] font-black uppercase tracking-[0.5em]">CineReserve Experience &bull; 2026</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin: Add City | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans selection:bg-mint-200">
+
+  <nav class="p-6 bg-white border-b border-mint-100 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <div class="max-w-5xl w-full mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-black text-mint-900 tracking-tighter flex items-center gap-2">
+        CineReserve 🎬 
+        <span class="text-[10px] uppercase bg-mint-900 text-white px-2 py-1 rounded-md tracking-widest ml-2">Admin</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <a href="/admin" class="text-sm font-bold text-mint-600 hover:text-mint-900 transition-colors">Dashboard</a>
+        <a href="/" class="text-sm font-bold text-slate-400 hover:text-mint-900 transition-colors">← Exit</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-xl mx-auto py-16 px-6">
+    
+    <div class="mb-10 text-center">
+      <h2 class="text-4xl font-black text-mint-900 mb-2">Expansion</h2>
+      <p class="text-slate-500 font-medium">Add a new geographical hub to the network</p>
+    </div>
+
+    <div class="bg-white rounded-[2.5rem] border border-mint-100 shadow-2xl shadow-mint-200/40 p-10 mb-10 transition-all hover:shadow-mint-200/60">
+      <form action="/api/cities" method="POST" class="space-y-8">
+        <div>
+          <label for="name" class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">
+            Official City Name
+          </label>
+          <input 
+            type="text" 
+            id="name"
+            name="name" 
+            placeholder="e.g. San Francisco" 
+            required
+            class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-5 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none transition-all placeholder:text-mint-200 text-lg"
+          >
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full bg-mint-900 text-white text-lg font-black py-5 rounded-2xl shadow-xl shadow-mint-900/20 hover:bg-black transition-all transform active:scale-[0.98] flex items-center justify-center gap-3"
+        >
+          <span>Confirm & Add City</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="bg-white border border-mint-200 rounded-3xl p-6 flex gap-4 items-center shadow-sm">
+      <div class="bg-mint-100 p-3 rounded-2xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-mint-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <p class="text-sm text-mint-900/70 leading-relaxed font-medium">
+        Newly added cities will immediately appear in the <span class="text-mint-600 font-bold">Public Hub</span> and the <span class="text-mint-600 font-bold">Show Scheduler</span>.
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="py-10 text-center text-mint-200 text-[10px] uppercase font-black tracking-[0.2em]">
+    CineReserve Administrative Portal &bull; Internal Use Only &bull; 2026
+  </footer>
+
+</body>
+</html>

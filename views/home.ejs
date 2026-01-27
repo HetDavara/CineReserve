@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineReserve | Movie Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',   // Background
+              100: '#dcfce7',
+              200: '#bbf7d0',   // Borders
+              500: '#10b981',   // Primary Accent
+              600: '#059669',   // Hover Accent
+              900: '#064e3b',   // Deep Text
+            }
+          },
+          animation: {
+            'bounce-slow': 'bounce 3s infinite',
+            'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans selection:bg-mint-200">
+
+  <header class="py-10 px-6 text-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-mint-100 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="animate-fade-in-up">
+        <h1 class="text-4xl font-black text-mint-900 tracking-tighter flex items-center justify-center md:justify-start gap-2">
+          CineReserve <span class="text-3xl">🎬</span>
+        </h1>
+        <p class="text-sm font-medium text-mint-600 uppercase tracking-widest mt-1">Premium Movie Experiences</p>
+      </div>
+
+      <nav class="flex items-center gap-4 animate-fade-in-up">
+        <% if (!isLoggedIn) { %>
+          <a href="/login" class="px-6 py-2 text-mint-900 font-bold hover:text-mint-500 transition-colors">Login</a>
+          <a href="/register" class="px-6 py-2 bg-mint-900 text-white rounded-full font-bold hover:bg-black transition-all shadow-md active:scale-95">Register</a>
+        <% } else { %>
+          <div class="flex items-center gap-3">
+            <a href="/my-bookings" class="px-6 py-2 bg-white text-mint-900 border border-mint-200 rounded-full font-bold hover:bg-mint-100 transition-all shadow-sm">
+              My Bookings
+            </a>
+            <form method="POST" action="/api/logout">
+              <button class="px-6 py-2 bg-red-50 text-red-600 border border-red-100 rounded-full font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm active:scale-95">
+                Logout
+              </button>
+            </form>
+          </div>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-20 px-4 max-w-7xl mx-auto">
+    <div class="text-center mb-24 animate-fade-in-up">
+      <h2 class="text-6xl md:text-7xl font-black text-mint-900 mb-6 leading-tight">
+        Movies are better <br> <span class="text-mint-500 italic">together.</span>
+      </h2>
+      <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto">
+        Book tickets for the latest blockbusters at the best cinemas in your city with zero hassle.
+      </p>
+      <button onclick="document.getElementById('cities').scrollIntoView({behavior:'smooth'})" 
+         class="animate-bounce-slow inline-block px-14 py-5 bg-mint-500 text-white text-2xl font-black rounded-full shadow-2xl shadow-mint-500/30 hover:scale-105 hover:bg-mint-600 transition-all active:scale-95">
+        🎟 Book Tickets Now
+      </button>
+    </div>
+
+    <div id="cities" class="pt-10">
+      <div class="flex items-center gap-4 mb-12">
+        <div class="h-px bg-mint-200 flex-grow"></div>
+        <h2 class="text-2xl font-black uppercase tracking-widest text-mint-900">Select Your City</h2>
+        <div class="h-px bg-mint-200 flex-grow"></div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4">
+        <% cities.forEach((city, index) => { %>
+          <a href="/movies/<%= city._id %>" 
+             class="group bg-white p-10 rounded-[2.5rem] border border-mint-100 hover:border-mint-500 transition-all hover:-translate-y-3 shadow-sm hover:shadow-2xl hover:shadow-mint-500/10 text-center relative overflow-hidden"
+             style="animation: fadeInUp 0.5s ease-out <%= index * 0.1 %>s forwards; opacity: 0;">
+            
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-mint-50 rounded-full group-hover:bg-mint-100 transition-colors"></div>
+            
+            <div class="relative z-10">
+              <span class="text-3xl font-black text-mint-900 group-hover:text-mint-500 transition-colors block mb-2">
+                <%= city.name %>
+              </span>
+              <div class="inline-flex items-center gap-2 text-mint-600 text-xs font-black uppercase tracking-tighter">
+                Explore Movies 
+                <span class="group-hover:translate-x-2 transition-transform">→</span>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-20 text-center border-t border-mint-100 mt-20">
+    <p class="text-mint-900 font-bold mb-2">CineReserve 🎬</p>
+    <p class="text-slate-400 text-sm">&copy; 2026 Premium Cinema Booking. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Review Your Booking | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brand: { dark: '#020617', card: '#1e293b', accent: '#22c55e', accentHover: '#16a34a' } } } } }
+  </script>
+</head>
+<body class="bg-brand-dark text-slate-200 min-h-screen">
+
+  <main class="max-w-2xl mx-auto py-20 px-6">
+    <div class="bg-brand-card rounded-3xl border border-slate-700 shadow-2xl overflow-hidden">
+      <div class="bg-brand-accent p-6 text-emerald-950 flex justify-between items-center">
+        <h2 class="text-2xl font-black italic uppercase">Booking Summary</h2>
+        <span class="text-sm font-bold opacity-75">CineReserve Checkout</span>
+      </div>
+
+      <div class="p-8 space-y-6">
+        <div class="flex justify-between border-b border-slate-800 pb-4">
+          <span class="text-slate-400 font-medium">Movie</span>
+          <span class="text-white font-bold"><%= movie.title %></span>
+        </div>
+
+        <div class="flex justify-between border-b border-slate-800 pb-4">
+          <span class="text-slate-400 font-medium">Selected Seats</span>
+          <span class="text-brand-accent font-black tracking-widest"><%= seats.join(', ') %></span>
+        </div>
+
+        <div class="flex justify-between items-center pt-4">
+          <div>
+            <p class="text-slate-400 text-sm">Total Price</p>
+            <p class="text-3xl font-black text-white">$<%= total %></p>
+          </div>
+          <div class="text-right">
+            <p class="text-slate-500 text-xs uppercase tracking-tighter">Includes Taxes & Fees</p>
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <button id="finalConfirmBtn" class="w-full py-5 bg-brand-accent text-emerald-950 text-xl font-black rounded-2xl hover:bg-brand-accentHover transition-all transform active:scale-95 shadow-xl shadow-emerald-900/20">
+            Confirm & Secure Tickets
+          </button>
+          <a href="/book/seats/<%= movie._id %>" class="block text-center text-slate-500 mt-4 hover:text-white transition-colors text-sm">
+            Cancel and edit seats
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('finalConfirmBtn').onclick = async () => {
+      const btn = document.getElementById('finalConfirmBtn');
+      btn.innerText = "Processing...";
+      btn.disabled = true;
+
+      const response = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          movieId: '<%= movie._id %>',
+          userId: '<%= user._id %>',
+          seats: <%- JSON.stringify(seats) %>
+        })
+      });
+
+      if (response.ok) {
+        alert("Success! Your tickets are booked.");
+        window.location.href = "/my-bookings";
+      } else {
+        const error = await response.json();
+        alert("Error: " + error.message);
+        btn.innerText = "Confirm & Secure Tickets";
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Seats | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans">
+
+  <nav class="p-6 bg-white/80 backdrop-blur-md border-b border-mint-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-black text-mint-900 tracking-tighter">
+        CineReserve <span class="text-mint-500">🎬</span>
+      </a>
+      <a href="/movies/<%= show.movie.cities[0] %>" class="text-sm font-bold text-mint-600 hover:text-mint-900 transition-colors flex items-center gap-2">
+        <span>← Change Movie</span>
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto py-12 px-6">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl font-black text-mint-900 mb-2">Pick Your Spot</h1>
+      <p class="text-slate-500 font-medium">
+        Experience <span class="text-mint-600 font-bold"><%= show.movie.title %></span> at <%= show.theatre.name %>
+      </p>
+    </header>
+
+    <input type="hidden" id="showId" value="<%= show._id %>">
+    <input type="hidden" id="userId" value="<%= user._id %>">
+
+    <div class="w-full max-w-lg mx-auto mb-16">
+        <div class="h-1.5 bg-mint-900 rounded-t-full shadow-[0_4px_20px_rgba(6,78,59,0.3)] mb-3"></div>
+        <p class="text-center text-[10px] tracking-[0.8em] text-mint-900/40 uppercase font-black">Cinema Screen</p>
+    </div>
+
+    <div class="flex flex-col items-center overflow-x-auto py-8">
+      <div class="inline-block p-10 bg-white rounded-[3rem] border border-mint-100 shadow-2xl shadow-mint-200/50">
+        <% for (let r = 0; r < rows; r++) { 
+              const rowChar = String.fromCharCode(65 + r); %>
+          <div class="flex gap-3 mb-4 justify-center">
+            <span class="w-8 text-mint-200 font-black text-xs self-center text-center"><%= rowChar %></span>
+            <% for (let c = 1; c <= cols; c++) { 
+                  const seat = rowChar + c; 
+                  const isBooked = bookedSeats.includes(seat); %>
+              
+              <div 
+                class="seat w-10 h-10 flex items-center justify-center rounded-xl text-[10px] font-black transition-all cursor-pointer 
+                <%= isBooked ? 'bg-slate-100 text-slate-300 cursor-not-allowed' : 'bg-mint-50 text-mint-900 border-2 border-mint-100 hover:border-mint-500 hover:bg-white hover:shadow-lg active:scale-90' %>"
+                data-seat="<%= seat %>">
+                <%= seat %>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-8 mt-12 mb-32">
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 bg-mint-50 border-2 border-mint-100 rounded-lg"></div> 
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Available</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 bg-mint-900 rounded-lg"></div> 
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Selected</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-5 h-5 bg-slate-100 rounded-lg"></div> 
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Sold Out</span>
+      </div>
+    </div>
+
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-4xl bg-mint-900 text-white p-6 rounded-[2.5rem] shadow-2xl z-50 border border-mint-600/20">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-6">
+            <div class="bg-mint-600/20 p-4 rounded-2xl border border-mint-600/30">
+                <p class="text-[10px] text-mint-200 font-black uppercase tracking-widest mb-1">Seats Selection</p>
+                <p id="selectedDisplay" class="text-xl font-black">None Selected</p>
+            </div>
+            <div class="hidden md:block w-px h-12 bg-mint-600/30"></div>
+            <div class="hidden md:block">
+                <p class="text-[10px] text-mint-200 font-black uppercase tracking-widest mb-1">Total Price</p>
+                <p class="text-xl font-black text-mint-100">$<span id="priceDisplay">0</span></p>
+            </div>
+        </div>
+        <button id="bookBtn" class="w-full md:w-auto px-12 py-5 bg-mint-500 text-white text-lg font-black rounded-2xl hover:bg-mint-600 transition-all transform active:scale-95 shadow-xl shadow-mint-500/20">
+          Confirm Reservation
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const selectedSeats = [];
+    const unitPrice = <%= show.price %>;
+    const selectedDisplay = document.getElementById("selectedDisplay");
+    const priceDisplay = document.getElementById("priceDisplay");
+    const showId = document.getElementById("showId").value;
+    const userId = document.getElementById("userId").value;
+
+    document.querySelectorAll(".seat").forEach(seat => {
+      seat.addEventListener("click", () => {
+        if (seat.classList.contains("bg-slate-100")) return;
+
+        const seatNo = seat.dataset.seat;
+        
+        // Toggle Styles
+        seat.classList.toggle("bg-mint-50");
+        seat.classList.toggle("border-mint-100");
+        seat.classList.toggle("bg-mint-900");
+        seat.classList.toggle("text-white");
+        seat.classList.toggle("border-mint-900");
+
+        if (selectedSeats.includes(seatNo)) {
+          selectedSeats.splice(selectedSeats.indexOf(seatNo), 1);
+        } else {
+          selectedSeats.push(seatNo);
+        }
+
+        // Update Checkout Bar
+        selectedDisplay.innerText = selectedSeats.length > 0 ? selectedSeats.join(", ") : "None Selected";
+        priceDisplay.innerText = (selectedSeats.length * unitPrice).toFixed(2);
+      });
+    });
+
+    document.getElementById("bookBtn").onclick = async () => {
+      if (selectedSeats.length === 0) {
+        alert("Please select your preferred seats first.");
+        return;
+      }
+
+      const res = await fetch("/api/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          showId: showId,
+          userId: userId,
+          seats: selectedSeats
+        })
+      });
+
+      if (res.ok) {
+        window.location.href = "/my-bookings";
+      } else {
+        const data = await res.json();
+        alert("Booking Error: " + data.message);
+      }
+    };
+  </script>
+
+</body>
+</html>

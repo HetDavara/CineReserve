@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin: Add Movie | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans selection:bg-mint-200">
+
+  <nav class="p-6 bg-white border-b border-mint-100 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <div class="max-w-5xl w-full mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-black text-mint-900 tracking-tighter flex items-center gap-2">
+        CineReserve 🎬 
+        <span class="text-[10px] uppercase bg-mint-900 text-white px-2 py-1 rounded-md tracking-widest ml-2">Admin</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <a href="/admin" class="text-sm font-bold text-mint-600 hover:text-mint-900 transition-colors">Dashboard</a>
+        <a href="/" class="text-sm font-bold text-slate-400 hover:text-mint-900 transition-colors">← Exit</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto py-16 px-6">
+    
+    <header class="mb-10 text-center">
+      <h2 class="text-4xl font-black text-mint-900 mb-2">Content Catalog</h2>
+      <p class="text-slate-500 font-medium">Register a new title into the booking system</p>
+    </header>
+
+    <div class="bg-white rounded-[2.5rem] border border-mint-100 shadow-2xl shadow-mint-200/40 p-8 md:p-12">
+      <form action="/api/movies" method="POST" class="space-y-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">Movie Title</label>
+            <input type="text" name="title" required placeholder="e.g. Inception" 
+              class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">Language</label>
+            <input type="text" name="language" required placeholder="e.g. English" 
+              class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none transition-all">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">Genre</label>
+            <input type="text" name="genre" placeholder="Sci-Fi, Thriller" 
+              class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">Duration (Minutes)</label>
+            <input type="number" name="duration" required placeholder="148" 
+              class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none transition-all">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">Description</label>
+          <textarea name="description" rows="4" placeholder="Briefly describe the movie plot..." 
+            class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none transition-all resize-none"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black uppercase text-mint-900/40 mb-3 ml-1 tracking-widest">Release Locations</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 bg-mint-50/50 p-6 rounded-[2rem] border border-mint-100 shadow-inner">
+            <% cities.forEach(city => { %>
+              <label class="flex items-center space-x-3 cursor-pointer group p-2 hover:bg-white rounded-xl transition-all">
+                <input type="checkbox" name="cities" value="<%= city._id %>" 
+                  class="w-5 h-5 rounded-lg border-mint-200 text-mint-600 focus:ring-mint-500 bg-white">
+                <span class="text-sm font-bold text-mint-900/70 group-hover:text-mint-900 transition-colors"><%= city.name %></span>
+              </label>
+            <% }) %>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-mint-900 text-white text-xl font-black py-6 rounded-[1.5rem] shadow-xl shadow-mint-900/20 hover:bg-black transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
+          Publish Movie to Catalog
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="py-12 text-center text-mint-200 text-[10px] uppercase font-black tracking-widest">
+    CineReserve Admin Console &bull; 2026
+  </footer>
+
+</body>
+</html>

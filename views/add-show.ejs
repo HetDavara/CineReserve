@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin: Schedule Shows | CineReserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-mint-50 text-mint-900 min-h-screen font-sans selection:bg-mint-200">
+
+  <nav class="p-6 bg-white border-b border-mint-100 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl w-full mx-auto flex justify-between items-center">
+      <a href="/" class="text-2xl font-black text-mint-900 tracking-tighter flex items-center gap-2">
+        CineReserve 🎬 
+        <span class="text-[10px] uppercase bg-mint-900 text-white px-2 py-1 rounded-md tracking-widest ml-2">Admin</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <a href="/admin" class="text-sm font-bold text-mint-600 hover:text-mint-900 transition-colors">Dashboard</a>
+        <a href="/" class="text-sm font-bold text-slate-400 hover:text-mint-900 transition-colors">← Exit</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-12 px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      
+      <div class="lg:col-span-4">
+        <div class="sticky top-28 bg-white rounded-[2.5rem] border border-mint-100 shadow-2xl shadow-mint-200/40 p-8">
+          <h2 class="text-3xl font-black text-mint-900 mb-6">Schedule</h2>
+          
+          <form action="/api/shows" method="POST" class="space-y-5">
+            <div>
+              <label class="block text-xs font-black uppercase text-mint-900/40 mb-2 ml-1 tracking-widest">Movie Title</label>
+              <select name="movie" required class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none appearance-none cursor-pointer">
+                <% movies.forEach(m => { %> <option value="<%= m._id %>"><%= m.title %></option> <% }) %>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-black uppercase text-mint-900/40 mb-2 ml-1 tracking-widest">Theatre & City</label>
+              <select name="theatre" required class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none appearance-none cursor-pointer">
+                <% theatres.forEach(t => { %> <option value="<%= t._id %>"><%= t.name %> (<%= t.city.name %>)</option> <% }) %>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-black uppercase text-mint-900/40 mb-2 ml-1 tracking-widest">Auditorium / Screen</label>
+              <select name="screen" required class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 focus:border-mint-500 outline-none appearance-none cursor-pointer">
+                <% screens.forEach(s => { %> <option value="<%= s._id %>"><%= s.name %> - <%= s.theatre.name %></option> <% }) %>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-black uppercase text-mint-900/40 mb-2 ml-1 tracking-widest">Price ($)</label>
+                <input type="number" name="price" required class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-mint-900/40 mb-2 ml-1 tracking-widest">Showtime</label>
+                <input type="datetime-local" name="showTime" required class="w-full bg-mint-50 border border-mint-100 rounded-2xl p-4 text-mint-900 font-bold focus:ring-4 focus:ring-mint-200 outline-none text-sm">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-mint-900 text-white text-lg font-black py-5 rounded-2xl shadow-xl shadow-mint-900/20 hover:bg-black transition-all transform active:scale-[0.98] mt-4">
+              Publish Show 🚀
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8">
+        <div class="flex items-center justify-between mb-8">
+          <h3 class="text-2xl font-black text-mint-900">Upcoming Schedule</h3>
+          <span class="px-4 py-1 bg-mint-100 text-mint-600 rounded-full text-xs font-black uppercase tracking-widest">
+            <%= shows.length %> Active Shows
+          </span>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] border border-mint-100 overflow-hidden shadow-2xl shadow-mint-200/30">
+          <table class="w-full text-left">
+            <thead class="bg-mint-50 border-b border-mint-100 text-mint-900/40 text-[10px] uppercase font-black tracking-[0.2em]">
+              <tr>
+                <th class="p-6">Movie & Screen</th>
+                <th class="p-6">Cinema Venue</th>
+                <th class="p-6">Date & Time</th>
+                <th class="p-6 text-right">Fare</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-mint-50">
+              <% shows.forEach(show => { %>
+                <tr class="group hover:bg-mint-50/50 transition-all">
+                  <td class="p-6">
+                    <p class="text-mint-900 font-black text-lg group-hover:text-mint-500 transition-colors"><%= show.movie.title %></p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1"><%= show.screen.name %></p>
+                  </td>
+                  <td class="p-6">
+                    <p class="text-mint-900 font-bold text-sm"><%= show.theatre.name %></p>
+                    <p class="text-slate-400 text-xs mt-1"><%= show.theatre.city.name %></p>
+                  </td>
+                  <td class="p-6">
+                    <div class="inline-flex items-center px-3 py-1 bg-white border border-mint-100 rounded-lg text-xs font-bold text-mint-900 shadow-sm">
+                      <%= new Date(show.showTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) %>
+                    </div>
+                  </td>
+                  <td class="p-6 text-right">
+                    <span class="text-xl font-black text-mint-900">$<%= show.price %></span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          
+          <% if (shows.length === 0) { %>
+            <div class="py-20 text-center">
+              <p class="text-slate-300 font-bold italic">No shows have been scheduled yet.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="py-12 text-center text-mint-200 text-[10px] uppercase font-black tracking-widest">
+    CineReserve Admin Console &bull; Internal Use Only &bull; 2026
+  </footer>
+
+</body>
+</html>
