@@ -284,6 +284,44 @@ app.get("/my-bookings", async (req, res) => {
         .populate({ path: "show", populate: { path: "movie theatre screen" } });
     res.render("my-bookings", { bookings });
 });
+app.get("/admin/add-screen", async (req, res) => {
+    console.log("[GET /admin/add-screen] Loading Screen Management");
+
+    try {
+        const theatres = await Theatre.find().populate("city").sort({ name: 1 });
+        const screens = await Screen.find().populate({
+            path: "theatre",
+            populate: { path: "city" }
+        });
+
+        res.render("add-screen", { theatres, screens });
+
+    } catch (err) {
+        console.error("[ADMIN ERROR] Load Screens:", err);
+        res.status(500).send("Error loading screen page");
+    }
+});
+app.post("/api/screens", async (req, res) => {
+    console.log("[POST /api/screens] Adding Screen:", req.body.name);
+
+    try {
+        const { name, theatre, rows, cols } = req.body;
+
+        await Screen.create({
+            name,
+            theatre,
+            rows: parseInt(rows),
+            cols: parseInt(cols)
+        });
+
+        res.redirect("/admin/add-screen");
+
+    } catch (err) {
+        console.error("[ADMIN ERROR] Create Screen:", err);
+        res.status(500).json({ message: "Error creating screen" });
+    }
+});
+
 
 /* =========================
    SERVER
