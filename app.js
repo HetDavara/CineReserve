@@ -2,6 +2,8 @@ const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const path = require("path");
+const MongoStore = require("connect-mongo");
+
 
 /* =========================
    DB CONNECTION & MODELS
@@ -24,10 +26,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: "cinereserve_secret",
-    resave: false,
-    saveUninitialized: false
+  secret: process.env.SESSION_SECRET || "cinereserve_secret",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }));
+
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -326,7 +335,7 @@ app.post("/api/screens", async (req, res) => {
 /* =========================
    SERVER
 ========================= */
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`\n========================================`);
     console.log(`🚀 CineReserve server is live on Port ${PORT}`);
