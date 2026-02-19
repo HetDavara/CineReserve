@@ -24,7 +24,6 @@ const app = express();
 ========================= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const MongoStore = require("connect-mongo").default;
 
 app.set("trust proxy", 1);
 
@@ -32,9 +31,6 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "cinereserve_secret",
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI
-  }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     secure: process.env.NODE_ENV === "production"
