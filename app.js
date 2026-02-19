@@ -2,7 +2,6 @@ const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const path = require("path");
-const MongoStore = require("connect-mongo");
 
 
 /* =========================
@@ -25,6 +24,10 @@ const app = express();
 ========================= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const MongoStore = require("connect-mongo").default;
+
+app.set("trust proxy", 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "cinereserve_secret",
   resave: false,
@@ -33,9 +36,11 @@ app.use(session({
     mongoUrl: process.env.MONGODB_URI
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24
+    maxAge: 1000 * 60 * 60 * 24,
+    secure: process.env.NODE_ENV === "production"
   }
 }));
+
 
 
 app.set("view engine", "ejs");
